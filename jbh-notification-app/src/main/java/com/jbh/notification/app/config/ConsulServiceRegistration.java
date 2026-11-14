@@ -1,0 +1,227 @@
+package com.jbh.notification.app.config;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.quarkus.runtime.ShutdownEvent;
+import io.quarkus.runtime.StartupEvent;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URI;
+import java.net.UnknownHostException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.jboss.logging.Logger;
+
+@ApplicationScoped
+public class ConsulServiceRegistration {
+
+  private static final Logger LOG = Logger.getLogger(ConsulServiceRegistration.class);
+
+  @Inject ObjectMapper objectMapper;
+
+  @ConfigProperty(name = "consul.enabled", defaultValue = "true")
+  boolean consulEnabled;
+
+  @ConfigProperty(name = "consul.host", defaultValue = "localhost")
+  String consulHost;
+
+  @ConfigProperty(name = "consul.port", defaultValue = "8500")
+  int consulPort;
+
+  @ConfigProperty(name = "consul.service.name", defaultValue = "jbh-notification")
+  String serviceName;
+
+  @ConfigProperty(name = "quarkus.http.port", defaultValue = "7778")
+  int servicePort;
+
+  @ConfigProperty(name = "consul.health-check.path", defaultValue = "/q/health")
+  String healthCheckPath;
+
+  @ConfigProperty(name = "consul.health-check.interval", defaultValue = "30s")
+  String healthCheckInterval;
+
+  // Host Consul uses for the health check. Empty: the service address. Locally Consul runs in
+  // Docker, where 127.0.0.1 is the container itself, so dev sets host.docker.internal.
+  @ConfigProperty(name = "consul.health-check.host")
+  Optional<String> healthCheckHost;
+
+  // Address saved in Consul. When set, it replaces the host name or IP. Local Docker needs one
+  // name that the gateway container and the Mac can both resolve.
+  @ConfigProperty(name = "consul.service.address")
+  Optional<String> configuredAddress;
+
+  @ConfigProperty(name = "consul.prefer-ip-address", defaultValue = "false")
+  boolean preferIpAddress;
+
+  @ConfigProperty(name = "consul.service.tags", defaultValue = "quarkus,jbh,notification")
+  List<String> serviceTags;
+
+  private String serviceId;
+  private HttpClient httpClient;
+
+  void onStart(@Observes final StartupEvent ev) {
+    LOG.info("Consul registration initialization started");
+    if (!consulEnabled) {
+      LOG.warn("Consul registration is disabled via configuration (consul.enabled=false)");
+      return;
+    }
+
+    LOG.debugf(
+        "Consul configuration: host=%s, port=%d, serviceName=%s",
+        consulHost, consulPort, serviceName);
+
+    httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+    LOG.debug("HTTP client created for Consul communication");
+
+    try {
+      registerService();
+    } catch (IOException | InterruptedException e) {
+      LOG.errorf(
+          e,
+          "Failed to register service with Consul at %s:%d - Service discovery will not be available",
+          consulHost,
+          consulPort);
+    }
+  }
+
+  private void registerService() throws IOException, InterruptedException {
+    LOG.info("Starting service registration with Consul");
+
+    final String instanceId = UUID.randomUUID().toString().substring(0, 8);
+    serviceId = serviceName + "-" + instanceId;
+    LOG.debugf("Generated service ID: %s", serviceId);
+
+    final String serviceAddress = resolveServiceAddress();
+    LOG.infof("Resolved service address: %s (preferIpAddress=%s)", serviceAddress, preferIpAddress);
+
+    final String checkHost = healthCheckHost.orElse(serviceAddress);
+    final String healthCheckUrl =
+        String.format("http://%s:%d%s", checkHost, servicePort, healthCheckPath);
+    LOG.infof("Health check URL configured: %s (interval=%s)", healthCheckUrl, healthCheckInterval);
+
+    final Map<String, Object> check =
+        Map.of(
+            "HTTP", healthCheckUrl,
+            "Interval", healthCheckInterval,
+            "DeregisterCriticalServiceAfter", "1m");
+
+    final Map<String, Object> registration =
+        Map.of(
+            "ID", serviceId,
+            "Name", serviceName,
+            "Address", serviceAddress,
+            "Port", servicePort,
+            "Tags", serviceTags,
+            "Check", check);
+
+    final String json = objectMapper.writeValueAsString(registration);
+    LOG.debugf("Registration payload: %s", json);
+
+    final String consulUrl =
+        String.format("http://%s:%d/v1/agent/service/register", consulHost, consulPort);
+    LOG.debugf("Sending registration request to Consul: %s", consulUrl);
+
+    final HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(URI.create(consulUrl))
+            .header("Content-Type", "application/json")
+            .PUT(HttpRequest.BodyPublishers.ofString(json))
+            .timeout(Duration.ofSeconds(10))
+            .build();
+
+    final HttpResponse<String> response =
+        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == Status.OK.getStatusCode()) {
+      LOG.infof(
+          "Service successfully registered with Consul: id=%s, alias=%s, address=%s:%d, tags=%s",
+          serviceId, serviceName, serviceAddress, servicePort, serviceTags);
+    } else {
+      LOG.errorf(
+          "Failed to register with Consul. Status: %d, Body: %s, URL: %s",
+          response.statusCode(), response.body(), consulUrl);
+    }
+  }
+
+  private String resolveServiceAddress() throws UnknownHostException {
+    LOG.debug("Resolving service address for Consul registration");
+    final Optional<String> address = configuredAddress.filter(value -> !value.isBlank());
+    if (address.isPresent()) {
+      LOG.debugf("Using configured address: %s", address.get());
+      return address.get();
+    }
+    try {
+      if (preferIpAddress) {
+        final String ipAddress = InetAddress.getLocalHost().getHostAddress();
+        LOG.debugf("Resolved IP address: %s", ipAddress);
+        return ipAddress;
+      }
+      final String hostName = InetAddress.getLocalHost().getHostName();
+      LOG.debugf("Resolved hostname: %s", hostName);
+      return hostName;
+    } catch (final UnknownHostException e) {
+      LOG.errorf(e, "Failed to resolve local host address - check network configuration");
+      throw e;
+    }
+  }
+
+  void onStop(@Observes final ShutdownEvent ev) {
+    LOG.info("Application shutdown detected - initiating Consul deregistration");
+    if (!consulEnabled) {
+      LOG.debug("Consul was disabled, skipping deregistration");
+      return;
+    }
+    if (httpClient == null || serviceId == null) {
+      LOG.warn(
+          "Consul deregistration skipped: service was not registered (httpClient or serviceId is null)");
+      return;
+    }
+
+    try {
+      deregisterService();
+    } catch (final IOException | InterruptedException e) {
+      LOG.errorf(
+          e,
+          "Failed to deregister service id=%s from Consul - Service may remain registered until TTL expires",
+          serviceId);
+    }
+  }
+
+  private void deregisterService() throws IOException, InterruptedException {
+    LOG.infof(
+        "Initiating service deregistration from Consul: id=%s, alias=%s", serviceId, serviceName);
+
+    final String consulUrl =
+        String.format(
+            "http://%s:%d/v1/agent/service/deregister/%s", consulHost, consulPort, serviceId);
+    LOG.debugf("Sending deregistration request to: %s", consulUrl);
+
+    final HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(URI.create(consulUrl))
+            .PUT(HttpRequest.BodyPublishers.noBody())
+            .timeout(Duration.ofSeconds(10))
+            .build();
+
+    final HttpResponse<String> response =
+        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+    if (response.statusCode() == Status.OK.getStatusCode()) {
+      LOG.infof("Service successfully deregistered from Consul: id=%s", serviceId);
+    } else {
+      LOG.errorf(
+          "Failed to deregister from Consul. Status: %d, Body: %s, ServiceId: %s",
+          response.statusCode(), response.body(), serviceId);
+    }
+  }
+}

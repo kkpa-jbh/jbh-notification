@@ -1,0 +1,91 @@
+# Image: builds the jbh-notification Docker image and pushes it to GHCR (GitHub Container
+# Registry), tagged with the git SHA and "latest".
+# When it runs: after every push to main, or by hand.
+# The VPS only pulls this image. It never builds Maven itself.
+
+# The name shown in the GitHub "Actions" tab.
+name: Image
+
+on:
+  # Adds a "Run workflow" button in the Actions tab, to build an image by hand.
+  workflow_dispatch:
+  # Runs on every push to main. A merged PR is a push to main, so this runs after each merge.
+  push:
+    branches: [ main ]
+
+# What the automatic GITHUB_TOKEN may do in this run. Every permission not listed is "none".
+# - contents: read   -> download the code.
+# - packages: write  -> push the image to GHCR and delete old image versions.
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  # "image" is the job id. Each job gets a fresh, empty Ubuntu VM that is deleted after.
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      # The VM starts empty. This step downloads the code of the pushed commit into it.
+      - uses: actions/checkout@v7
+
+      # Installs Java 21 (Temurin build). "cache: maven" saves ~/.m2 between runs,
+      # so Maven does not download every dependency again each time.
+      - uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # Builds the Quarkus fast-jar in jbh-notification-app/target/quarkus-app.
+      # The Dockerfile only copies that folder, so Docker needs no Maven.
+      # -B: batch mode, plain logs.
+      # -U: the ~/.m2 cache is restored, so force a check for a newer jbh-commons-lib SNAPSHOT.
+      # -s .github/maven-settings.xml: the Maven settings file with the logins for GitHub Packages.
+      # -Pgithub: turns on the "github" profile in pom.xml, to read jbh-commons-lib from GitHub Packages.
+      # -pl jbh-notification-app: build only the app module.
+      # -am: "also make". Also builds the modules the app needs (parent, contracts, infra).
+      # -DskipTests: do not run the tests.
+      # package: the Maven phase that builds the jar; nothing is uploaded.
+      - name: Package Quarkus app
+        run: mvn -B -U -s .github/maven-settings.xml -Pgithub -pl jbh-notification-app -am -DskipTests package
+        env:
+          # GitHub creates this token for each run; it is not a secret you add by hand.
+          # maven-settings.xml uses it for server "github" (this repo's packages).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # A repo secret you add by hand: a classic token with only read:packages.
+          # maven-settings.xml uses it for server "github-packages-read", to download jbh-commons-lib.
+          PACKAGES_READ_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN }}
+
+      # Logs Docker in to GHCR, so the next step can push.
+      # username: the GitHub user who started the run.
+      # password: the run's GITHUB_TOKEN (packages: write, above).
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Builds the image from jbh-notification-app/Dockerfile and pushes it.
+      # context: the folder Docker builds from; it holds the Dockerfile and target/quarkus-app.
+      # push: true -> upload the image after the build.
+      - uses: docker/build-push-action@v7
+        with:
+          context: jbh-notification-app
+          push: true
+          # One version per push. Build attestations would add untagged versions that use up the 2 kept slots.
+          provenance: false
+          # Two tags on the same image: the commit SHA (to deploy or roll back an exact version)
+          # and "latest" (the newest build of main).
+          tags: |
+            ghcr.io/kkpa-jbh/jbh-notification:${{ github.sha }}
+            ghcr.io/kkpa-jbh/jbh-notification:latest
+
+      # GitHub Free: 500 MB for private packages. Keep the 2 newest images: the running one and one to roll back to.
+      # package-name / package-type: the GHCR image to clean.
+      # min-versions-to-keep: 2 -> every older version is deleted.
+      - name: Delete old images
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: jbh-notification
+          package-type: container
+          min-versions-to-keep: 2

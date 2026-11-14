@@ -1,20 +1,45 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Project: jbh-notification, one service of the JBH system. It sends notifications (email
+  today) for the other services. The system map is ../jbh-deploy/README.md.
+  Project rules: CLAUDE.md. Code standards: ../jbh-personal-finance/.claude/standards/.
+  Specs here describe capability behavior, not architecture.
+  Tech stack: Java 21, Quarkus (Maven multi-module), hexagonal architecture, PostgreSQL,
+  Liquibase.
+  Layout: one pipeline module (this repo). Maven modules: jbh-notification-contracts
+  (published library), jbh-notification-infra (service code), jbh-notification-app
+  (runnable app, port 7778, Consul name jbh-notification).
+  Database: database jbh_finance, schema notifications, shared with jbh-personal-finance.
+  Writing: English, B2 level. Short sentences, common words.
+  Horizontal scaling: the app runs as more than one instance. Every design must stay correct
+  with 2 or more instances. Protect shared data in PostgreSQL (row lock, @Version, unique
+  constraint, atomic SQL), never with in-JVM locks, caches, or executors.
+  Archive rules ("archive" is not a valid key under rules:, so they live here):
+  - Archive under openspec/changes/archive/notification/YYYY-MM-DD-<change-name>, never flat.
+  - Never archive a change whose progress.json exists and review.status is not
+    reviewer-approved.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+rules:
+  proposal:
+    - Change names start with the module - jbh-notification-<verb-noun-slug>.
+    - State whether the change is breaking and which services it affects.
+    - If the change touches the database or a hot read path, name the read paths it affects.
+    - 'If the change came from a ticket, the header carries "Source ticket: <TICKET> - <url>".'
+  specs:
+    - Use GIVEN/WHEN/THEN for scenarios.
+    - Describe behavior (WHAT). Implementation (HOW) goes in design.md.
+  design:
+    - design.md is required for any change that touches the database. Never skip it as "simple".
+    - Each new or changed DB object (table, column, index, constraint, view) must include the
+      full schema, the Liquibase changeset, the reason for the design and rejected options, and
+      an index plan based on the real read queries.
+    - Never rename or move a Liquibase changelog file or changeset. Liquibase keys history on
+      the file path, id and author.
+  tasks:
+    - Use checkbox tasks. Each task is atomic and testable.
+    - Tick tasks.md checkboxes live while you work, so any session can resume.
+    - Group tasks into independent sub-tasks with an explicit "Depends on:" line, so separate
+      agents can run them in parallel when they touch different files.
+    - progress.json belongs to the kkpa-orchestrate-change skill. Follow its contract; do not
+      restate it here.

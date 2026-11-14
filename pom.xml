@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.jbh</groupId>
+  <artifactId>jbh-notification-parent</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>JBH Notification</name>
+  <description>Notification service of the JBH system (email today)</description>
+
+  <modules>
+    <module>jbh-notification-contracts</module>
+    <module>jbh-notification-infra</module>
+    <!-- App last: it needs the other modules built first -->
+    <module>jbh-notification-app</module>
+  </modules>
+
+  <properties>
+    <java.version>21</java.version>
+    <maven.compiler.release>${java.version}</maven.compiler.release>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <quarkus.version>3.33.4.1</quarkus.version>
+    <lombok.version>1.18.30</lombok.version>
+
+    <jandex-plugin.version>3.1.2</jandex-plugin.version>
+    <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+    <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
+    <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
+    <maven-pmd-plugin.version>3.25.0</maven-pmd-plugin.version>
+    <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+
+    <pmd.failOnViolation>true</pmd.failOnViolation>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Quarkus BOM - manages all Quarkus dependencies -->
+      <dependency>
+        <artifactId>quarkus-bom</artifactId>
+        <groupId>io.quarkus.platform</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>${quarkus.version}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>jbh-commons-lib</artifactId>
+        <groupId>com.jbh</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>jbh-notification-contracts</artifactId>
+        <groupId>com.jbh</groupId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>jbh-notification-infra</artifactId>
+        <groupId>com.jbh</groupId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <artifactId>lombok</artifactId>
+        <groupId>org.projectlombok</groupId>
+        <version>${lombok.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <artifactId>quarkus-arc</artifactId>
+      <groupId>io.quarkus</groupId>
+    </dependency>
+
+    <dependency>
+      <artifactId>jbh-commons-lib</artifactId>
+      <groupId>com.jbh</groupId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <enablePreview>false</enablePreview>
+            <parameters>true</parameters>
+            <release>${maven.compiler.release}</release>
+          </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <version>${maven-compiler-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <!-- Ensures compatibility with Java 9+ JPMS / module-info.java -->
+            <useModulePath>true</useModulePath>
+            <!-- Docker 29+ accepts only API 1.44+. Testcontainers 1.20 falls back to 1.32 and fails with 400. -->
+            <environmentVariables>
+              <DOCKER_API_VERSION>1.44</DOCKER_API_VERSION>
+            </environmentVariables>
+          </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <version>${maven-surefire-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <groupId>org.apache.maven.plugins</groupId>
+          <version>${maven-failsafe-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>jandex-maven-plugin</artifactId>
+          <groupId>io.smallrye</groupId>
+          <version>${jandex-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>quarkus-maven-plugin</artifactId>
+          <groupId>io.quarkus.platform</groupId>
+          <version>${quarkus.version}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <configuration>
+            <excludes>
+              <exclude>**/logging/**/*.java</exclude>
+            </excludes>
+            <failOnViolation>${pmd.failOnViolation}</failOnViolation>
+            <printFailingErrors>true</printFailingErrors>
+            <rulesets>
+              <!-- Absolute path: the ruleset sits in the repo root, every module reads the same file -->
+              <ruleset>${maven.multiModuleProjectDirectory}/pmd-ruleset.xml</ruleset>
+            </rulesets>
+            <targetJdk>${java.version}</targetJdk>
+          </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <version>${maven-pmd-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <configuration>
+            <rules>
+              <banDuplicatePomDependencyVersions/>
+              <bannedDependencies>
+                <excludes>
+                  <exclude>log4j:log4j:*:jar:compile</exclude>
+                  <exclude>commons-logging:commons-logging:*:jar:compile</exclude>
+                </excludes>
+                <message>These dependencies are banned due to security vulnerabilities or conflicts</message>
+              </bannedDependencies>
+              <dependencyConvergence/>
+              <requireJavaVersion>
+                <message>Java 21 or higher is required for this project</message>
+                <version>[21,)</version>
+              </requireJavaVersion>
+              <requireMavenVersion>
+                <message>Maven 3.8.1 or higher is required for this project</message>
+                <version>[3.8.1,)</version>
+              </requireMavenVersion>
+            </rules>
+          </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <version>${maven-enforcer-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
+
+      <!-- Jandex index for CDI bean discovery -->
+      <plugin>
+        <artifactId>jandex-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jandex</goal>
+            </goals>
+            <id>make-index</id>
+          </execution>
+        </executions>
+        <groupId>io.smallrye</groupId>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <id>enforce-rules</id>
+            <phase>validate</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
+
+      <!-- PMD runs in the verify phase and fails the build on any violation -->
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <id>pmd-check</id>
+            <phase>verify</phase>
+          </execution>
+        </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub kkpa-jbh Maven Packages</name>
+      <url>https://maven.pkg.github.com/kkpa-jbh/jbh-notification</url>
+    </repository>
+  </distributionManagement>
+
+  <profiles>
+    <!-- CI only (-Pgithub): resolve jbh-commons-lib from GitHub Packages. Local builds use ~/.m2. -->
+    <profile>
+      <id>github</id>
+      <repositories>
+        <repository>
+          <id>github-packages-read</id>
+          <url>https://maven.pkg.github.com/kkpa-jbh/jbh-commons-lib</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+</project>

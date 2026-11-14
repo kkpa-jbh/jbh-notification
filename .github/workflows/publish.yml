@@ -1,0 +1,65 @@
+# Publish: uploads jbh-notification-contracts (and the parent POM it needs) to GitHub Packages.
+# Other services depend on the contracts (jbh-gateway-client, jbh-iam), so it must run first
+# when the contracts change.
+# When it runs: after a push to main that changes the contracts or the root pom.xml, or by hand.
+# The tests are not run here: this workflow only publishes.
+
+# The name shown in the GitHub "Actions" tab.
+name: Publish notification contracts
+
+on:
+  # Adds a "Run workflow" button in the Actions tab, to publish by hand.
+  workflow_dispatch:
+  # Runs on a push to main. A merged PR is a push to main, so this runs after a merge.
+  push:
+    branches: [ main ]
+    # Only when one of these paths changed. A change to the infra or app module does not
+    # publish the contracts again.
+    paths:
+      - 'jbh-notification-contracts/**'
+      - 'pom.xml'
+
+# What the automatic GITHUB_TOKEN may do in this run. Every permission not listed is "none".
+# - contents: read   -> download the code.
+# - packages: write  -> upload the jars to this repo's GitHub Packages.
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  # "publish" is the job id. Each job gets a fresh, empty Ubuntu VM that is deleted after.
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      # The VM starts empty. This step downloads the code of the pushed commit into it.
+      - uses: actions/checkout@v7
+
+      # Installs Java 21 (Temurin build). "cache: maven" saves ~/.m2 between runs,
+      # so Maven does not download every dependency again each time.
+      - uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # Builds the contracts jar and uploads it to the URL in pom.xml <distributionManagement>.
+      # -B: batch mode, plain logs.
+      # -s .github/maven-settings.xml: the Maven settings file with the logins for the
+      #    server ids "github" (upload) and "github-packages-read" (download).
+      # -Pgithub: turns on the "github" profile in pom.xml. It reads jbh-commons-lib from
+      #    GitHub Packages, because the VM has no ~/.m2 with it.
+      # -pl jbh-notification-contracts: build only the contracts module.
+      # -am: "also make". Also builds and publishes the modules it needs, here the parent POM.
+      #    A consumer cannot resolve the contracts without the parent POM.
+      # -DskipTests: do not run the tests.
+      # deploy: the Maven phase that uploads the built files.
+      - name: Publish contracts
+        run: mvn -B -s .github/maven-settings.xml -Pgithub -pl jbh-notification-contracts -am -DskipTests deploy
+        env:
+          # GitHub creates this token for each run; it is not a secret you add by hand.
+          # maven-settings.xml uses it for server "github": it can upload to this repo's packages.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # A repo secret you add by hand: a classic token with only read:packages.
+          # maven-settings.xml uses it for server "github-packages-read", to download
+          # jbh-commons-lib from the jbh-commons-lib repo. GITHUB_TOKEN cannot read other repos.
+          PACKAGES_READ_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN }}

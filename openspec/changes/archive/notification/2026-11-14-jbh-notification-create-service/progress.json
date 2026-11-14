@@ -1,0 +1,1113 @@
+{
+  "schema_version": 1,
+  "kind": "change",
+  "change": "jbh-notification-create-service",
+  "module": "jbh-notification",
+  "roadmap": null,
+  "request": "JBH-74 section 2: create the jbh-notification Quarkus service in this repo. Move jbh-personal-finance/jbh-notification/jbh-notification-contracts and jbh-notification-infra here, add a runnable app module modelled on jbh-personal-finance/jbh-z-assembly (port 7778, Consul name jbh-notification, Dockerfile). Remove the preferences call (DirectPreferencesAdapter, UserPreferencesPort, jbh-preferences-contracts): a request locale wins, otherwise default 'es'. Depend on com.jbh:jbh-commons-lib:1.0.0-SNAPSHOT from its new repo. Datasource stays on jbh_finance, schema notifications. Add publish (contracts) and image workflows, README.md, CLAUDE.md. Ticket: JBH-74 (naming only; do NOT move it in Linear — jbh-leader owns status). Stop after the proposal is written, validated, design briefing shown, and committed; do not dispatch Step 5 workers until jbh-leader sends \"go section 2\". Do not push.",
+  "status": "archived",
+  "rollup": {
+    "current": [],
+    "pending": [],
+    "blocked": [],
+    "done": [
+      "1.1",
+      "1.2",
+      "1.3",
+      "2.1",
+      "2.2",
+      "2.3",
+      "3.1",
+      "3.2",
+      "3.3",
+      "3.4",
+      "3.5",
+      "4.1",
+      "4.2",
+      "4.3",
+      "4.4",
+      "4.5",
+      "4.6",
+      "5.1",
+      "5.2",
+      "5.3",
+      "6.1",
+      "6.2",
+      "7.1",
+      "7.2",
+      "7.3",
+      "7.4",
+      "7.5"
+    ]
+  },
+  "created_at": "2026-11-14T01:58:02Z",
+  "updated_at": "2026-11-14T11:47:16Z",
+  "leader": {
+    "assistant": "Claude Code",
+    "model": "claude-opus-5-5"
+  },
+  "git": {
+    "strategy": "auto",
+    "branch": "ft/CH1-JBH-74-jbh-notification-create-service",
+    "base": "94dac51b6c76f6c7857d528016a17557f550ae2c",
+    "ticket": "JBH-74",
+    "ticket_url": null,
+    "ticket_tracker": "linear",
+    "created_at": "2026-11-14T01:58:02Z"
+  },
+  "test_first": {
+    "status": "skipped",
+    "commit": null,
+    "tests": [],
+    "approved_at": null
+  },
+  "tasks": [
+    {
+      "id": "1.1",
+      "title": "Create `pom.xml`: `com.jbh:jbh-notification-parent:1.0.0-SNAPSHOT`, packaging `pom`, modules contracts, infra, app, Quar",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Root pom jbh-notification-parent: Quarkus BOM, plugin mgmt, PMD via ${maven.multiModuleProjectDirectory}, github profile, distributionManagement. SpotBugs and MODULE_NAME dropped (D1, D7).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "1.2",
+      "title": "Copy `pmd-ruleset.xml` unchanged from finance.",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "pmd-ruleset.xml copied unchanged.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "1.3",
+      "title": "Create `.gitignore` (`target/`, `.env`, `.DS_Store`, `.idea/`).",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": ".gitignore: target/, .env, .DS_Store, .idea/.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "2.1",
+      "title": "Copy `jbh-notification/jbh-notification-contracts/` to `jbh-notification-contracts/` (main, `module-info.java`, 10 tests",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Contracts copied with 10 tests; Java unchanged.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "2.2",
+      "title": "Change the `pom.xml` parent to `jbh-notification-parent`. Keep the artifact id.",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Contracts parent is jbh-notification-parent; artifactId unchanged.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "2.3",
+      "title": "Fix paths and names in the contracts `README.md` that point to finance.",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Contracts README had no finance references; no change.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "3.1",
+      "title": "Copy `jbh-notification/jbh-notification-infra/` to `jbh-notification-infra/`, except `UserPreferencesPort`, `DirectPrefe",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Infra copied without preferences classes. Test profile lost its preferences index override. Migration test passed after Docker disk was freed.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "3.2",
+      "title": "Infra `pom.xml`: parent `jbh-notification-parent`; remove `jbh-preferences-contracts`; `jbh-commons-lib` without `${proj",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Infra pom: preferences-contracts removed; commons-lib managed version.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "3.3",
+      "title": "`NotificationService`: remove `UserPreferencesPort` (import, field, constructor parameter) and `resolveUserLanguage`. Pa",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "NotificationService: 3 constructor params, withLocaleIfAbsent(DEFAULT_LANGUAGE), resolveUserLanguage removed (D6).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "3.4",
+      "title": "Check: no `com.jbh.preferences` or `jbh-preferences` string in any `*.java` or `pom.xml`.",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Leader grep: no com.jbh.preferences / jbh-preferences in *.java, pom.xml, *.properties.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "3.5",
+      "title": "Check (D12): `db/notificationdb-master.xml`, `db/changelog/001_create_notifications_schema.sql` and `application.propert",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Leader diff: both Liquibase files identical to finance (D12).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "4.1",
+      "title": "Create `jbh-notification-app/pom.xml` (D3, D9): parent, quarkus plugin with `build`, `generate-code`, `generate-code-tes",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "App pom with health, Prometheus, JSON logging, OTel; depends on infra (D3, D9).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "4.2",
+      "title": "Create `BootstrapNotificationApp` and `module-info.java` (module `jbh.notification.app`).",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "BootstrapNotificationApp and module-info jbh.notification.app.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "4.3",
+      "title": "Copy `ConsulServiceRegistration` and `MetricsTagsConfig` to `com.jbh.notification.app.config`. Change package and the th",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "ConsulServiceRegistration (id = name + suffix) and MetricsTagsConfig in app.config.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "4.4",
+      "title": "Create `src/main/resources/application.properties` (D9).",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "App application.properties: port 7778, consul jbh-notification, observability; named datasource metrics key added.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "4.5",
+      "title": "Copy the three tests to `src/test/java/com/jbh/notification/app/config/`. Change package and literals only (D5). Do not ",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Three app tests copied; package and literals only (D5).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "4.6",
+      "title": "Create `Dockerfile` (`EXPOSE 7778`) and copy `.dockerignore`.",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Dockerfile EXPOSE 7778 and .dockerignore.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "5.1",
+      "title": "Copy `.github/maven-settings.xml` from finance.",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "maven-settings.xml copied.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "5.2",
+      "title": "Create `.github/workflows/publish.yml` (D8).",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "publish.yml: contracts deploy with -am, -Pgithub, mvn (D8).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "5.3",
+      "title": "Create `.github/workflows/image.yml` (D8).",
+      "module": "jbh-notification",
+      "depends_on": [
+        "1.1",
+        "1.2",
+        "1.3"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "image.yml: fast-jar of app, pushes sha and latest tags (D8).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
+    },
+    {
+      "id": "6.1",
+      "title": "Create `README.md`: purpose, modules, port 7778, env vars, build, run, image, contracts use.",
+      "module": "jbh-notification",
+      "depends_on": [
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6",
+        "5.1",
+        "5.2",
+        "5.3"
+      ],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T02:06:56Z",
+      "completed_at": "2026-11-14T11:45:06Z",
+      "duration_seconds": 34690,
+      "notes": "README.md: purpose, modules, endpoint, port 7778, env vars, DB schema, language rule, build/run/image, contracts use, CI. Leader checked endpoint against NotificationRoutes.",
+      "budget": {
+        "five_hour_pct_start": 61.0,
+        "five_hour_pct_end": 13,
+        "five_hour_pct_delta": -48.0,
+        "cost_usd_delta": 2.45,
+        "context_pct_end": 22,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of wave 2 (6.1, 6.2), includes Docker cleanup and full suite run"
+      }
+    },
+    {
+      "id": "6.2",
+      "title": "Write `CLAUDE.md`: keep the `## Pipeline config (kkpa-orchestrate-change)` block unchanged. Add conventions, build and r",
+      "module": "jbh-notification",
+      "depends_on": [
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6",
+        "5.1",
+        "5.2",
+        "5.3"
+      ],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T02:06:56Z",
+      "completed_at": "2026-11-14T11:45:06Z",
+      "duration_seconds": 34690,
+      "notes": "CLAUDE.md: Pipeline config block unchanged; purpose, layout, conventions, rules (Liquibase never renamed), build commands, System map sync rule (D10).",
+      "budget": {
+        "five_hour_pct_start": 61.0,
+        "five_hour_pct_end": 13,
+        "five_hour_pct_delta": -48.0,
+        "cost_usd_delta": 2.45,
+        "context_pct_end": 22,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of wave 2 (6.1, 6.2), includes Docker cleanup and full suite run"
+      }
+    },
+    {
+      "id": "7.1",
+      "title": "Build and test: `mvn -B -Pgithub clean verify` (needs `jbh-commons-lib` in `~/.m2` or a read token).",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6",
+        "5.1",
+        "5.2",
+        "5.3",
+        "6.1",
+        "6.2"
+      ],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "leader",
+      "model": "claude-opus-5-5",
+      "started_at": "2026-11-14T02:08:00Z",
+      "completed_at": "2026-11-14T11:45:06Z",
+      "duration_seconds": 34626,
+      "notes": "Leader: mvn -B clean verify exit 0 (local ~/.m2 commons-lib, no -Pgithub; CI covers the github profile).",
+      "budget": null
+    },
+    {
+      "id": "7.2",
+      "title": "Database tests: `mvn -B -pl jbh-notification-infra -Djbh.test.excludedGroups=none test` (Docker needed).",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6",
+        "5.1",
+        "5.2",
+        "5.3",
+        "6.1",
+        "6.2"
+      ],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "leader",
+      "model": "claude-opus-5-5",
+      "started_at": "2026-11-14T02:08:00Z",
+      "completed_at": "2026-11-14T11:45:06Z",
+      "duration_seconds": 34626,
+      "notes": "Leader: mvn -B clean verify -Djbh.test.excludedGroups=none exit 0, 106 tests incl. NotificationLiquibaseMigrationTest, after freeing Docker disk.",
+      "budget": null
+    },
+    {
+      "id": "7.3",
+      "title": "PMD: `mvn -q pmd:check`.",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6",
+        "5.1",
+        "5.2",
+        "5.3",
+        "6.1",
+        "6.2"
+      ],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "leader",
+      "model": "claude-opus-5-5",
+      "started_at": "2026-11-14T02:08:00Z",
+      "completed_at": "2026-11-14T11:45:06Z",
+      "duration_seconds": 34626,
+      "notes": "Leader: mvn -q pmd:check exit 0.",
+      "budget": null
+    },
+    {
+      "id": "7.4",
+      "title": "Package: `mvn -B -Pgithub -pl jbh-notification-app -am -DskipTests package`, then check `jbh-notification-app/target/qua",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6",
+        "5.1",
+        "5.2",
+        "5.3",
+        "6.1",
+        "6.2"
+      ],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "leader",
+      "model": "claude-opus-5-5",
+      "started_at": "2026-11-14T02:08:00Z",
+      "completed_at": "2026-11-14T11:45:06Z",
+      "duration_seconds": 34626,
+      "notes": "Leader: jbh-notification-app/target/quarkus-app/quarkus-run.jar exists after verify.",
+      "budget": null
+    },
+    {
+      "id": "7.5",
+      "title": "Run the checks of the design test contract (rows \"Preferences removed\", \"Changelog identical\").",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "3.1",
+        "3.2",
+        "3.3",
+        "3.4",
+        "3.5",
+        "4.1",
+        "4.2",
+        "4.3",
+        "4.4",
+        "4.5",
+        "4.6",
+        "5.1",
+        "5.2",
+        "5.3",
+        "6.1",
+        "6.2"
+      ],
+      "parallel_ok": false,
+      "status": "done",
+      "agent": "leader",
+      "model": "claude-opus-5-5",
+      "started_at": "2026-11-14T02:08:00Z",
+      "completed_at": "2026-11-14T11:45:06Z",
+      "duration_seconds": 34626,
+      "notes": "Leader: no preferences refs (grep); Liquibase files identical to finance (diff).",
+      "budget": null
+    }
+  ],
+  "review": {
+    "status": "reviewer-approved",
+    "agent": "jbh-notification-reviewer",
+    "brief": "Review git diff 94dac51...HEAD (new repo; base is the OpenSpec scaffold). User decisions: D1 single-module repo config; D2 SRP only; D3 observability as finance; D4 root pom jbh-notification-parent; D7 design approved; D8 size over cap accepted; D9 Liquibase transition risk deferred, no guard, no note; D13 Docker images removed. Check: code moved from ../jbh-personal-finance/jbh-notification matches except D6 (NotificationService: no UserPreferencesPort, withLocaleIfAbsent(DEFAULT_LANGUAGE)) and D5 (preferences test classes deleted; NotificationDatabaseTestProfile lost its preferences index override; 3 app tests changed only package and literals). Liquibase files byte-identical to finance at the same classpath paths (D12). No com.jbh.preferences reference. App: port 7778, Consul name jbh-notification, health /q/health. Workflows: publish deploys contracts with -am; image pushes ghcr.io/kkpa-jbh/jbh-notification sha+latest. Docs match code. No DB object changed (D11). Unit tests excluded by the system plan: do not ask for new tests. Signals: all assistant-run by the leader (mvn -B clean verify -Djbh.test.excludedGroups=none exit 0, 106 tests; mvn -q pmd:check exit 0); none user-reported. Security-Gate: skip (user).",
+    "rounds": [
+      {
+        "round": 1,
+        "at": "2026-11-14T11:46:40Z",
+        "verdict": "approved",
+        "findings": [],
+        "security": {
+          "status": "skipped",
+          "ran_at": null,
+          "scope": null,
+          "findings": [],
+          "note": "User chose to skip /security-review at the gate (decisions[] D14, scope review:security-gate)."
+        },
+        "note": "Moved code diffed against finance: only D5/D6/D1/D7/D9 differences. Liquibase files identical. No new violations.",
+        "duration_seconds": 52,
+        "budget": {
+          "five_hour_pct_start": 15.0,
+          "five_hour_pct_end": 25,
+          "five_hour_pct_delta": 10.0,
+          "cost_usd_delta": 0.64,
+          "context_pct_end": 23,
+          "source": "statusline-cache",
+          "approx": false
+        }
+      }
+    ]
+  },
+  "decisions": [
+    {
+      "id": "D1",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Pipeline config: single-module repo, Modules-Root `..`, finance standards as Doc-Pack, Complexity-Check mvn -q pmd:check",
+      "why": "Repo root files (root pom, .github) need one owner; Maven-module split would force a roadmap",
+      "covered_by": null
+    },
+    {
+      "id": "D2",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "SOLID: SRP only",
+      "why": "Code mostly moves; no new extension point needed",
+      "covered_by": null
+    },
+    {
+      "id": "D3",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Observability same as finance (OTel, JSON logs, Micrometer, MetricsTagsConfig)",
+      "why": "Keeps Grafana dashboards and traces consistent across services",
+      "covered_by": null
+    },
+    {
+      "id": "D4",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Root POM artifactId jbh-notification-parent",
+      "why": "Avoids ~/.m2 clash with finance's com.jbh:jbh-notification pom until section 5",
+      "covered_by": null
+    },
+    {
+      "id": "D5",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "test_first skipped: no new unit tests; existing tests move with their code",
+      "why": "System plan excludes unit tests (user decision in JBH-74)",
+      "covered_by": "JBH-74 plan: Unit tests excluded"
+    },
+    {
+      "id": "D6",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "Database design gate not touched; Liquibase files keep exact paths and content",
+      "why": "No DB object created or altered; path change would re-run changeset",
+      "covered_by": null
+    },
+    {
+      "id": "D7",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Design briefing approved as written (D1-D13)",
+      "why": "User reviewed Step 3a briefing",
+      "covered_by": null
+    },
+    {
+      "id": "D8",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Size cap exceeded (~820 lines / 22 files vs 500/15): accepted",
+      "why": "About 670 lines are copied config; logic change is a few lines",
+      "covered_by": null
+    },
+    {
+      "id": "D9",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "task:3.5",
+      "made_by": "user",
+      "decision": "Liquibase on shared schema during transition: deferred, no guard and no note",
+      "why": "Window closes at section 5 deploy; Liquibase lock serializes starts",
+      "covered_by": null
+    },
+    {
+      "id": "D10",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "No other race risk: two instances covered by Liquibase lock; status update unchanged; one gateway route at a time",
+      "why": "Checked every task in tasks.md and design.md",
+      "covered_by": null
+    },
+    {
+      "id": "D11",
+      "at": "2026-11-14T01:58:02Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "Committed untracked OpenSpec scaffold on main before branching; JBH-74 not moved in Linear",
+      "why": "Repo had no commit, branch needed a base; jbh-leader owns ticket status",
+      "covered_by": "JBH-74 plan Execution Rules"
+    },
+    {
+      "id": "D12",
+      "at": "2026-11-14T01:59:30Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "Merged dependency waves (group 1, groups 2-5) into one serial wave 1 worker",
+      "why": "Root pom alone cannot build: its modules do not exist yet. One worker reads the doc pack once.",
+      "covered_by": null
+    },
+    {
+      "id": "D13",
+      "at": "2026-11-14T11:45:06Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Free Docker VM disk by removing unused images (opensearch x2, postgres:16, postgres:17)",
+      "why": "VM disk 7.8 GB was 100% full; DB test and Consul failed. No container or volume removed.",
+      "covered_by": null
+    },
+    {
+      "id": "D14",
+      "at": "2026-11-14T11:45:46Z",
+      "scope": "review:security-gate",
+      "made_by": "user",
+      "decision": "Skip /security-review in the review",
+      "why": "User choice at the security gate; diff has CI secrets and dependencies, recommendation was run.",
+      "covered_by": null
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-11-14T01:58:02Z",
+      "agent": "leader",
+      "event": "budget available: five_hour 21%, context 12% at Step 0"
+    },
+    {
+      "at": "2026-11-14T01:58:02Z",
+      "agent": "leader",
+      "event": "artifact worker (sonnet) wrote proposal/design/specs/tasks; openspec validate --strict passed"
+    },
+    {
+      "at": "2026-11-14T01:58:02Z",
+      "agent": "leader",
+      "event": "artifact worker (haiku) revised design.md Concurrency with user answers; validate passed"
+    },
+    {
+      "at": "2026-11-14T01:58:02Z",
+      "agent": "leader",
+      "event": "progress.json folded into the artifacts commit so the commit is a full recovery point; stop before Step 5 until jbh-leader sends 'go section 2'"
+    },
+    {
+      "at": "2026-11-14T01:58:02Z",
+      "agent": "leader",
+      "event": "skill drift: SKILL.md Step 3b names scope concurrency[:<id>], check-progress.py rejects it; used task:3.5 / change"
+    },
+    {
+      "at": "2026-11-14T01:59:30Z",
+      "agent": "leader",
+      "event": "resume after 'go section 2' from jbh-leader; commons-lib in ~/.m2, Docker up; dispatched wave 1 (tasks 1.1-5.3) to one sonnet worker"
+    },
+    {
+      "at": "2026-11-14T02:06:41Z",
+      "agent": "leader",
+      "event": "wave 1 report checked; worker timestamps were estimates, leader bracket times used"
+    },
+    {
+      "at": "2026-11-14T02:06:41Z",
+      "agent": "leader",
+      "event": "the leader (assistantRunsTests): mvn -B clean verify exit 0 (99 tests pass); mvn -q pmd:check exit 0; quarkus-run.jar exists; grep and Liquibase diff clean"
+    },
+    {
+      "at": "2026-11-14T02:06:41Z",
+      "agent": "leader",
+      "event": "environment failure: mvn verify -Djbh.test.excludedGroups=none exit 1, NotificationLiquibaseMigrationTest: postgres:18 container 'No space left on device' (Docker VM disk). No code change; 3.1 awaiting verification"
+    },
+    {
+      "at": "2026-11-14T02:06:56Z",
+      "agent": "leader",
+      "event": "wave 1 committed 062e943"
+    },
+    {
+      "at": "2026-11-14T02:06:56Z",
+      "agent": "leader",
+      "event": "dispatched wave 2 (tasks 6.1, 6.2) to one sonnet worker"
+    },
+    {
+      "at": "2026-11-14T11:45:06Z",
+      "agent": "leader",
+      "event": "user asked to cap jbh-discovery-nexus at 500MB; it already uses 158MB, VM disk was the cause. Leader ran docker rmi of 4 unused images (user choice): 2.7GB free"
+    },
+    {
+      "at": "2026-11-14T11:45:06Z",
+      "agent": "leader",
+      "event": "wave 2 report checked; worker missed NotificationRestAdapterV1, leader verified endpoint in README against code"
+    },
+    {
+      "at": "2026-11-14T11:45:06Z",
+      "agent": "leader",
+      "event": "the leader (assistantRunsTests): mvn -B clean verify -Djbh.test.excludedGroups=none exit 0 (106 tests); mvn -q pmd:check exit 0; complexity: only NotificationService.sendNotification changed, PMD clean"
+    },
+    {
+      "at": "2026-11-14T11:45:21Z",
+      "agent": "leader",
+      "event": "wave 2 committed 280487c"
+    },
+    {
+      "at": "2026-11-14T11:45:21Z",
+      "agent": "leader",
+      "event": "Step 6 verified: suite pass recorded (106 tests, PMD); openspec validate --strict ok. Real size git diff --shortstat 94dac51...HEAD: 92 files, +7376/-17 (estimate: 22 new/changed + 61 copied)"
+    },
+    {
+      "at": "2026-11-14T11:45:46Z",
+      "agent": "leader",
+      "event": "dispatched reviewer jbh-notification-reviewer (sonnet), round 1; budget start 5h/cost read before dispatch"
+    },
+    {
+      "at": "2026-11-14T11:47:01Z",
+      "agent": "leader",
+      "event": "review round 1: approved, no findings, security skipped (user). Observation: stale EmailMetadata Javadoc mentions preferences fallback (untouched code)"
+    },
+    {
+      "at": "2026-11-14T11:47:16Z",
+      "agent": "leader",
+      "event": "archived to openspec/changes/archive/notification/2026-11-14-jbh-notification-create-service; specs synced (+10 requirements in 3 capabilities); KB sync skipped: no kkpa/context/; Linear not moved (jbh-leader owns JBH-74)"
+    }
+  ]
+}
