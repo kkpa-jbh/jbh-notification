@@ -27,7 +27,8 @@ with `jbh-personal-finance`), Liquibase.
 
 ## Rules
 
-- Never build or start services unless the pipeline allows it.
+- Builds, tests and PMD are allowed, with quiet output (`mvn -q verify 2>&1 | tail -40`).
+  Never start the service (`quarkus:dev`). Ask first before the database tests: they start Docker.
 - Never commit `.env`.
 - Liquibase: never rename or move a changelog file or changeset. History is keyed on file
   path, id and author.
