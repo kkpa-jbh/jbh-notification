@@ -1,0 +1,57 @@
+# CI: builds and tests the code on every pull request into main, before the merge.
+# It uses the same CI settings as image.yml and publish.yml: GitHub Packages and the
+# PACKAGES_READ_TOKEN secret. So a broken build or a bad token fails here, on the PR.
+# The ruleset protect-main requires the "verify" check, so a red PR cannot merge.
+# This workflow publishes nothing.
+
+# The name shown in the GitHub "Actions" tab and in the PR checks list.
+name: CI
+
+on:
+  # Runs when a PR into main is opened, gets new commits, or is reopened.
+  pull_request:
+    branches: [ main ]
+  # Adds a "Run workflow" button in the Actions tab, to run the checks by hand.
+  workflow_dispatch:
+
+# What the automatic GITHUB_TOKEN may do in this run. Every permission not listed is "none".
+# - contents: read -> download the code.
+# - packages: read -> read this repo's packages (server "github").
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  # "verify" is the job id. It is the check name in the PR checks list and in protect-main.
+  # Renaming the job breaks the required check: update protect-main in the same PR.
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      # The VM starts empty. This step downloads the PR's code into it.
+      - uses: actions/checkout@v7
+
+      # Installs Java 21 (Temurin build). "cache: maven" saves ~/.m2 between runs,
+      # so Maven does not download every dependency again each time.
+      - uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # Builds all modules, runs every test and PMD. One PMD violation fails the build.
+      # -B: batch mode, plain logs.
+      # -U: the ~/.m2 cache is restored, so force a check for a newer jbh-commons-lib SNAPSHOT.
+      # -s .github/maven-settings.xml: the Maven settings file with the logins for GitHub Packages.
+      # -Pgithub: turns on the "github" profile in pom.xml, to read jbh-commons-lib from GitHub Packages.
+      # -Djbh.test.excludedGroups=none: also run the "database" tests (Liquibase migrations).
+      #    They start PostgreSQL in Docker, which the Ubuntu runner has.
+      # clean verify: delete old build output, then run every phase up to verify.
+      - name: Build and test
+        run: mvn -B -U -s .github/maven-settings.xml -Pgithub -Djbh.test.excludedGroups=none clean verify
+        env:
+          # GitHub creates this token for each run; it is not a secret you add by hand.
+          # maven-settings.xml uses it for server "github" (this repo's packages).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # A repo secret you add by hand: a classic token with only read:packages.
+          # maven-settings.xml uses it for server "github-packages-read", to download jbh-commons-lib.
+          PACKAGES_READ_TOKEN: ${{ secrets.PACKAGES_READ_TOKEN }}

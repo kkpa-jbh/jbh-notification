@@ -117,5 +117,6 @@ token is the secret `PACKAGES_READ_TOKEN`.
 
 | Workflow | Trigger | Result |
 |---|---|---|
+| `ci` | Pull request into `main`; manual | Builds, runs all tests (also the database tests) and PMD. Required check `verify` in `protect-main` |
 | `publish` | Push to `main` that changes `jbh-notification-contracts/**` or `pom.xml`; manual | Publishes the contracts and the parent POM to GitHub Packages |
 | `image` | Push to `main`; manual | Builds and pushes the image to GHCR, keeps the 2 newest |
