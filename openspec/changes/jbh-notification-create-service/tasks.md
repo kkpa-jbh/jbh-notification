@@ -63,18 +63,18 @@ Depends on: 1
 ## 6. Docs
 Depends on: 4, 5
 
-- [ ] 6.1 Create `README.md`: purpose, modules, port 7778, env vars, build, run, image, contracts use.
-- [ ] 6.2 Write `CLAUDE.md`: keep the `## Pipeline config (kkpa-orchestrate-change)` block
+- [x] 6.1 Create `README.md`: purpose, modules, port 7778, env vars, build, run, image, contracts use.
+- [x] 6.2 Write `CLAUDE.md`: keep the `## Pipeline config (kkpa-orchestrate-change)` block
   unchanged. Add conventions, build and run commands, and the "System map sync" rule (D10).
 
 ## 7. Verification (leader runs; the worker does not)
 Depends on: 2, 3, 4, 5, 6
 
-- [ ] 7.1 Build and test: `mvn -B -Pgithub clean verify` (needs `jbh-commons-lib` in `~/.m2` or a read token).
-- [ ] 7.2 Database tests: `mvn -B -pl jbh-notification-infra -Djbh.test.excludedGroups=none test` (Docker needed).
-- [ ] 7.3 PMD: `mvn -q pmd:check`.
-- [ ] 7.4 Package: `mvn -B -Pgithub -pl jbh-notification-app -am -DskipTests package`, then check
+- [x] 7.1 Build and test: `mvn -B -Pgithub clean verify` (needs `jbh-commons-lib` in `~/.m2` or a read token).
+- [x] 7.2 Database tests: `mvn -B -pl jbh-notification-infra -Djbh.test.excludedGroups=none test` (Docker needed).
+- [x] 7.3 PMD: `mvn -q pmd:check`.
+- [x] 7.4 Package: `mvn -B -Pgithub -pl jbh-notification-app -am -DskipTests package`, then check
   `jbh-notification-app/target/quarkus-app/quarkus-run.jar`.
-- [ ] 7.5 Run the checks of the design test contract (rows "Preferences removed", "Changelog identical").
+- [x] 7.5 Run the checks of the design test contract (rows "Preferences removed", "Changelog identical").
 
 Size estimate: 22 new or changed files, ~820 changed lines (tests and docs included); plus 61 files copied unchanged (about 3,000 lines moved without edit)
