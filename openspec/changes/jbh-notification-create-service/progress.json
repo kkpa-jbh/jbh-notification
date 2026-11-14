@@ -5,17 +5,28 @@
   "module": "jbh-notification",
   "roadmap": null,
   "request": "JBH-74 section 2: create the jbh-notification Quarkus service in this repo. Move jbh-personal-finance/jbh-notification/jbh-notification-contracts and jbh-notification-infra here, add a runnable app module modelled on jbh-personal-finance/jbh-z-assembly (port 7778, Consul name jbh-notification, Dockerfile). Remove the preferences call (DirectPreferencesAdapter, UserPreferencesPort, jbh-preferences-contracts): a request locale wins, otherwise default 'es'. Depend on com.jbh:jbh-commons-lib:1.0.0-SNAPSHOT from its new repo. Datasource stays on jbh_finance, schema notifications. Add publish (contracts) and image workflows, README.md, CLAUDE.md. Ticket: JBH-74 (naming only; do NOT move it in Linear — jbh-leader owns status). Stop after the proposal is written, validated, design briefing shown, and committed; do not dispatch Step 5 workers until jbh-leader sends \"go section 2\". Do not push.",
-  "status": "proposed",
+  "status": "in-progress",
   "rollup": {
-    "current": [],
+    "current": [
+      "3.1"
+    ],
     "pending": [
+      "6.1",
+      "6.2",
+      "7.1",
+      "7.2",
+      "7.3",
+      "7.4",
+      "7.5"
+    ],
+    "blocked": [],
+    "done": [
       "1.1",
       "1.2",
       "1.3",
       "2.1",
       "2.2",
       "2.3",
-      "3.1",
       "3.2",
       "3.3",
       "3.4",
@@ -28,20 +39,11 @@
       "4.6",
       "5.1",
       "5.2",
-      "5.3",
-      "6.1",
-      "6.2",
-      "7.1",
-      "7.2",
-      "7.3",
-      "7.4",
-      "7.5"
-    ],
-    "blocked": [],
-    "done": []
+      "5.3"
+    ]
   },
   "created_at": "2026-11-14T01:58:02Z",
-  "updated_at": "2026-11-14T01:58:02Z",
+  "updated_at": "2026-11-14T02:06:41Z",
   "leader": {
     "assistant": "Claude Code",
     "model": "claude-opus-5-5"
@@ -68,14 +70,23 @@
       "module": "jbh-notification",
       "depends_on": [],
       "parallel_ok": false,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Root pom jbh-notification-parent: Quarkus BOM, plugin mgmt, PMD via ${maven.multiModuleProjectDirectory}, github profile, distributionManagement. SpotBugs and MODULE_NAME dropped (D1, D7).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "1.2",
@@ -83,14 +94,23 @@
       "module": "jbh-notification",
       "depends_on": [],
       "parallel_ok": false,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "pmd-ruleset.xml copied unchanged.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "1.3",
@@ -98,14 +118,23 @@
       "module": "jbh-notification",
       "depends_on": [],
       "parallel_ok": false,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": ".gitignore: target/, .env, .DS_Store, .idea/.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "2.1",
@@ -117,14 +146,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Contracts copied with 10 tests; Java unchanged.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "2.2",
@@ -136,14 +174,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Contracts parent is jbh-notification-parent; artifactId unchanged.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "2.3",
@@ -155,14 +202,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Contracts README had no finance references; no change.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "3.1",
@@ -174,14 +230,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "awaiting-user-verification",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Infra copied without preferences classes. Test profile lost its preferences index override. Migration test (Docker) not yet run: Docker VM disk full.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "3.2",
@@ -193,14 +258,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Infra pom: preferences-contracts removed; commons-lib managed version.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "3.3",
@@ -212,14 +286,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "NotificationService: 3 constructor params, withLocaleIfAbsent(DEFAULT_LANGUAGE), resolveUserLanguage removed (D6).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "3.4",
@@ -231,14 +314,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Leader grep: no com.jbh.preferences / jbh-preferences in *.java, pom.xml, *.properties.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "3.5",
@@ -250,14 +342,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Leader diff: both Liquibase files identical to finance (D12).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "4.1",
@@ -269,14 +370,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "App pom with health, Prometheus, JSON logging, OTel; depends on infra (D3, D9).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "4.2",
@@ -288,14 +398,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "BootstrapNotificationApp and module-info jbh.notification.app.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "4.3",
@@ -307,14 +426,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "ConsulServiceRegistration (id = name + suffix) and MetricsTagsConfig in app.config.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "4.4",
@@ -326,14 +454,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "App application.properties: port 7778, consul jbh-notification, observability; named datasource metrics key added.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "4.5",
@@ -345,14 +482,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Three app tests copied; package and literals only (D5).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "4.6",
@@ -364,14 +510,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "Dockerfile EXPOSE 7778 and .dockerignore.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "5.1",
@@ -383,14 +538,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "maven-settings.xml copied.",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "5.2",
@@ -402,14 +566,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "publish.yml: contracts deploy with -am, -Pgithub, mvn (D8).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "5.3",
@@ -421,14 +594,23 @@
         "1.3"
       ],
       "parallel_ok": true,
-      "status": "pending",
-      "agent": null,
-      "model": null,
-      "started_at": null,
-      "completed_at": null,
-      "duration_seconds": null,
-      "notes": null,
-      "budget": null
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "sonnet",
+      "started_at": "2026-11-14T01:59:30Z",
+      "completed_at": "2026-11-14T02:06:41Z",
+      "duration_seconds": 431,
+      "notes": "image.yml: fast-jar of app, pushes sha and latest tags (D8).",
+      "budget": {
+        "five_hour_pct_start": 52.0,
+        "five_hour_pct_end": 61,
+        "five_hour_pct_delta": 9.0,
+        "cost_usd_delta": 1.24,
+        "context_pct_end": 21,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "shared delta of serial wave 1 (tasks 1.1-5.3), includes leader verification"
+      }
     },
     {
       "id": "6.1",
@@ -761,6 +943,15 @@
       "decision": "Committed untracked OpenSpec scaffold on main before branching; JBH-74 not moved in Linear",
       "why": "Repo had no commit, branch needed a base; jbh-leader owns ticket status",
       "covered_by": "JBH-74 plan Execution Rules"
+    },
+    {
+      "id": "D12",
+      "at": "2026-11-14T01:59:30Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "Merged dependency waves (group 1, groups 2-5) into one serial wave 1 worker",
+      "why": "Root pom alone cannot build: its modules do not exist yet. One worker reads the doc pack once.",
+      "covered_by": null
     }
   ],
   "events": [
@@ -788,6 +979,26 @@
       "at": "2026-11-14T01:58:02Z",
       "agent": "leader",
       "event": "skill drift: SKILL.md Step 3b names scope concurrency[:<id>], check-progress.py rejects it; used task:3.5 / change"
+    },
+    {
+      "at": "2026-11-14T01:59:30Z",
+      "agent": "leader",
+      "event": "resume after 'go section 2' from jbh-leader; commons-lib in ~/.m2, Docker up; dispatched wave 1 (tasks 1.1-5.3) to one sonnet worker"
+    },
+    {
+      "at": "2026-11-14T02:06:41Z",
+      "agent": "leader",
+      "event": "wave 1 report checked; worker timestamps were estimates, leader bracket times used"
+    },
+    {
+      "at": "2026-11-14T02:06:41Z",
+      "agent": "leader",
+      "event": "the leader (assistantRunsTests): mvn -B clean verify exit 0 (99 tests pass); mvn -q pmd:check exit 0; quarkus-run.jar exists; grep and Liquibase diff clean"
+    },
+    {
+      "at": "2026-11-14T02:06:41Z",
+      "agent": "leader",
+      "event": "environment failure: mvn verify -Djbh.test.excludedGroups=none exit 1, NotificationLiquibaseMigrationTest: postgres:18 container 'No space left on device' (Docker VM disk). No code change; 3.1 awaiting verification"
     }
   ]
 }
