@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "kind": "change",
+  "change": "jbh-notification-add-otel-export-histograms",
+  "module": "jbh-notification",
+  "roadmap": null,
+  "request": "JBH-55 section 6 (jbh-notification) — export in prod, latency histograms. Ticket: JBH-82 (record as git.ticket, tracker linear). Plan: /Users/cristianpena/cpena/sw/github/kkpa-jbh/kkpa/tickets/JBH-55/JBH-55.md, section 6 (read its Context section too, for the shared bucket list). Fixed names from section 1: OTEL_EXPORTER_OTLP_ENDPOINT=http://jbh-alloy:4317 (Docker), http://localhost:14317 (IDE default), OTEL_SDK_DISABLED=false, JBH_ENV=local. Constraints: plan says unit tests excluded; do not run builds unless assistantRunsTests is true; the leader session (jbh-leader) owns all Linear status moves for JBH-55 and its sub-issues, so do NOT run kkpa-pickup-linear-ticket in-progress/done. Git: start the change branch from local main, which holds the unpushed commit 77bdf51 \"chore: add Qodana config\" — the user chose to keep it in this branch and PR.",
+  "status": "proposed",
+  "rollup": {
+    "current": [],
+    "pending": [
+      "1.1",
+      "1.2",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.4",
+      "3.1",
+      "4.1",
+      "4.2"
+    ],
+    "blocked": [],
+    "done": []
+  },
+  "created_at": "2026-11-16T01:19:30Z",
+  "updated_at": "2026-11-16T01:19:50Z",
+  "leader": {
+    "assistant": "Claude Code",
+    "model": "claude-opus-5-5"
+  },
+  "git": {
+    "strategy": "auto",
+    "branch": "ft/CH2-JBH-82-jbh-notification-add-otel-export-histograms",
+    "base": "main",
+    "ticket": "JBH-82",
+    "ticket_url": "https://linear.app/kkpa/issue/JBH-82",
+    "ticket_tracker": "linear",
+    "created_at": "2026-11-15T19:50:00Z"
+  },
+  "test_first": {
+    "status": "skipped",
+    "commit": null,
+    "tests": [],
+    "approved_at": null
+  },
+  "tasks": [
+    {
+      "id": "1.1",
+      "title": "Add httpServerLatency() MeterFilter with the 11 SLO buckets",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "pending",
+      "agent": null,
+      "model": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "notes": null
+    },
+    {
+      "id": "1.2",
+      "title": "Update MetricsTagsConfig class Javadoc",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "pending",
+      "agent": null,
+      "model": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "notes": null
+    },
+    {
+      "id": "2.1",
+      "title": "OBSERVABILITY block: logs in every profile, one endpoint, D8 export switch",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "pending",
+      "agent": null,
+      "model": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "notes": null
+    },
+    {
+      "id": "2.2",
+      "title": "jbh.metrics.env from JBH_ENV; resource attributes",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "pending",
+      "agent": null,
+      "model": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "notes": null
+    },
+    {
+      "id": "2.3",
+      "title": "Fix MDC comment (no trackingId)",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "pending",
+      "agent": null,
+      "model": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "notes": null
+    },
+    {
+      "id": "2.4",
+      "title": "Keep JSON console in prod and other lines unchanged",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "pending",
+      "agent": null,
+      "model": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "notes": null
+    },
+    {
+      "id": "3.1",
+      "title": "Update ObservabilityConfigPropertiesTest to new values (D7)",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4"
+      ],
+      "parallel_ok": true,
+      "status": "pending",
+      "agent": null,
+      "model": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "notes": null
+    },
+    {
+      "id": "4.1",
+      "title": "README Observability section and env var rows",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4"
+      ],
+      "parallel_ok": true,
+      "status": "pending",
+      "agent": null,
+      "model": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "notes": null
+    },
+    {
+      "id": "4.2",
+      "title": "CLAUDE.md Observability section",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4"
+      ],
+      "parallel_ok": true,
+      "status": "pending",
+      "agent": null,
+      "model": null,
+      "started_at": null,
+      "completed_at": null,
+      "duration_seconds": null,
+      "notes": null
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "agent": null,
+    "brief": null,
+    "rounds": []
+  },
+  "decisions": [
+    {
+      "id": "D1",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Keep Qodana commit 77bdf51 in this branch and PR",
+      "why": "User choice over a separate PR or leaving it on local main."
+    },
+    {
+      "id": "D2",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Only SRP binds; latency filter goes into MetricsTagsConfig as a second @Produces method",
+      "why": "Matches plan and section 5; a new class was rejected."
+    },
+    {
+      "id": "D3",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Run-time export switch as a config lookup (no Java)",
+      "why": "Quarkus exporter switches are build time; Java Sampler bean rejected as more code for the same result."
+    },
+    {
+      "id": "D4",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Design briefing approved",
+      "why": "User replied ok to the revised briefing (D1-D8)."
+    },
+    {
+      "id": "D5",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "test_first skipped",
+      "why": "Plan header 'Unit tests: excluded' (user); only existing tests are updated."
+    },
+    {
+      "id": "D6",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "concurrency",
+      "made_by": "leader",
+      "decision": "No race risk found",
+      "why": "Config, a stateless MeterFilter with a constant, one test, docs; no shared state or writes."
+    },
+    {
+      "id": "D7",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "No Linear status moves from this session",
+      "why": "Plan Execution Rules: only the jbh-leader session moves JBH-55 sub-issues; overrides the pipeline Linear rule."
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-11-16T01:19:30Z",
+      "agent": "leader",
+      "event": "artifacts committed 284f8eb; progress.json created"
+    },
+    {
+      "at": "2026-11-16T01:19:37Z",
+      "agent": "leader",
+      "event": "dispatched worker for wave 1 (tasks 1.1-4.2, one serial worker, sonnet)"
+    },
+    {
+      "at": "2026-11-16T01:19:50Z",
+      "agent": "leader",
+      "event": "wave 1 dispatch cancelled before start: budget checkpoint (five_hour 97%, context 20%, five_hour_resets_at 1794796800); tasks back to pending"
+    },
+    {
+      "at": "2026-11-16T01:19:50Z",
+      "agent": "leader",
+      "event": "resume-armed — five_hour_resets_at 1794796800, wake epoch 1794796920, five_hour 97%, context 20%"
+    }
+  ]
+}
