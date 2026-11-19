@@ -50,7 +50,7 @@ The body is a `SendNotificationCommand` (see the contracts module).
 | `CONSUL_PREFER_IP` | Register the IP instead of the host name | `true` |
 | `OTEL_SDK_DISABLED` | `true` stops only the OTLP export. Tracing stays on. Values are case-sensitive `true` or `false`; a bad value means off | `true` (`false` in dev) |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP gRPC collector (all profiles) | `http://localhost:14317` |
-| `OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG` | Trace sampling when export is on | `parentbased_traceidratio`, `1.0` |
+| `OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG` | Trace sampling when export is on. Ignored while export is off | `parentbased_traceidratio`, `1.0` |
 | `JBH_ENV` | Environment name: metric tag `env` and resource attribute `deployment.environment.name` | `prod` (ignored in dev and test) |
 
 Never commit a `.env` file.

@@ -29,7 +29,9 @@ The service SHALL register in Consul as `jbh-notification`, with health check pa
 ### Requirement: Observability
 The service SHALL export metrics, JSON logs in prod, and traces and logs over OTLP when
 export is on (`OTEL_SDK_DISABLED=false`; default off). `OTEL_SDK_DISABLED` stops only the OTLP
-export: tracing stays on, under the application name `jbh-notification`. HTTP server latency SHALL be
+export: tracing stays on, under the application name `jbh-notification`. The sampling env vars
+(`OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG`) SHALL apply only when export is on. When export is
+off, the sampler SHALL stay `always_off`, whatever these env vars say. HTTP server latency SHALL be
 published as a histogram with fixed buckets. Telemetry SHALL NOT carry recipient emails,
 email bodies, invitation tokens or Gmail credentials.
 
@@ -72,6 +74,17 @@ email bodies, invitation tokens or Gmail credentials.
 - **WHEN** the service handles a request
 - **THEN** traces and logs are sent over OTLP
 - **AND** the sampler is `OTEL_TRACES_SAMPLER` (default `parentbased_traceidratio`)
+
+#### Scenario: Switch set to true keeps the trace id
+- **GIVEN** `OTEL_SDK_DISABLED` is `true`
+- **WHEN** the service handles a request that has no `traceparent` header
+- **THEN** no trace or log is sent over OTLP
+- **AND** log lines carry a valid generated `traceId`
+
+#### Scenario: Sampler env var cannot turn export on
+- **GIVEN** export is off and `OTEL_TRACES_SAMPLER` is `always_on`
+- **WHEN** the service handles a request
+- **THEN** no span is sampled and no span is sent over OTLP
 
 #### Scenario: Bad switch value
 - **GIVEN** `OTEL_SDK_DISABLED` is `1` or `TRUE` (not exactly `true` or `false`)
