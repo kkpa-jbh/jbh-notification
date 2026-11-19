@@ -25,6 +25,14 @@ with `jbh-personal-finance`), Liquibase.
 - Support 2 or more app instances. Protect shared data in PostgreSQL, never with in-JVM locks.
 - Write docs and comments in plain English. No HTML comments in markup.
 
+## Observability
+
+- Config is in `jbh-notification-app/src/main/resources/application.properties` (OBSERVABILITY
+  block) and `MetricsTagsConfig` (common tags and HTTP latency buckets).
+- Never put a recipient email, email body, invitation token or Gmail credential in logs or
+  span attributes.
+- Env vars and the local check are in `README.md`, section "Observability".
+
 ## Rules
 
 - Builds, tests and PMD are allowed, with quiet output (`mvn -q verify 2>&1 | tail -40`).
