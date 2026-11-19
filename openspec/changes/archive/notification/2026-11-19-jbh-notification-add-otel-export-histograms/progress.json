@@ -5,7 +5,7 @@
   "module": "jbh-notification",
   "roadmap": null,
   "request": "JBH-55 section 6 (jbh-notification) — export in prod, latency histograms. Ticket: JBH-82 (record as git.ticket, tracker linear). Plan: /Users/cristianpena/cpena/sw/github/kkpa-jbh/kkpa/tickets/JBH-55/JBH-55.md, section 6 (read its Context section too, for the shared bucket list). Fixed names from section 1: OTEL_EXPORTER_OTLP_ENDPOINT=http://jbh-alloy:4317 (Docker), http://localhost:14317 (IDE default), OTEL_SDK_DISABLED=false, JBH_ENV=local. Constraints: plan says unit tests excluded; do not run builds unless assistantRunsTests is true; the leader session (jbh-leader) owns all Linear status moves for JBH-55 and its sub-issues, so do NOT run kkpa-pickup-linear-ticket in-progress/done. Git: start the change branch from local main, which holds the unpushed commit 77bdf51 \"chore: add Qodana config\" — the user chose to keep it in this branch and PR.",
-  "status": "applied",
+  "status": "archived",
   "rollup": {
     "current": [],
     "pending": [],
@@ -23,7 +23,7 @@
     ]
   },
   "created_at": "2026-11-16T01:19:30Z",
-  "updated_at": "2026-11-19T14:22:36Z",
+  "updated_at": "2026-11-19T20:08:15Z",
   "leader": {
     "assistant": "Claude Code",
     "model": "claude-opus-5-5"
@@ -277,10 +277,32 @@
     }
   ],
   "review": {
-    "status": "pending",
-    "agent": null,
-    "brief": null,
-    "rounds": []
+    "status": "reviewer-approved",
+    "agent": "jbh-notification-reviewer",
+    "brief": "Change jbh-notification-add-otel-export-histograms (JBH-82). Check the diff git diff main...HEAD (commit 24b4da9 holds the code; 77bdf51 Qodana is on local main, out of scope). User decisions: latency filter is a second @Produces method in MetricsTagsConfig, no new class (D2 progress); export switch is a config lookup, no Java (D3 progress, design D8); unit tests excluded, only ObservabilityConfigPropertiesTest updated per design D7, no new method; design briefing D1-D8 approved. Verify: properties match design D1/D2/D3/D8 lines exactly; D4 filter (exact name match, 11 buckets in nanos, merge(config), other meters untouched); D7 test covers each table row and the 3 renames are justified; README/CLAUDE.md values match the properties (default endpoint http://localhost:14317, JBH_ENV default prod, OTEL_SDK_DISABLED meaning); D6 sensitive-data rule stated. No database change, no concurrency risk (D6 progress). Test-First: on, blueprint skipped (D5). Security-Gate: skip (user, D10). Signals: mvn -q clean verify exit 0 and mvn -q pmd:check exit 0 were assistant-run by the leader; the curl /q/metrics checks were not run (no service started). Language: English (B2).",
+    "rounds": [
+      {
+        "round": 1,
+        "at": "2026-11-19T20:30:00Z",
+        "verdict": "approved",
+        "findings": [],
+        "security": {
+          "status": "skipped",
+          "ran_at": "2026-11-19T20:30:00Z",
+          "scope": "git.base",
+          "findings": [],
+          "note": "Skipped: user chose to skip /security-review at the gate (decision D10, scope review:security-gate)."
+        },
+        "note": "All lenses clean. Properties match design D1/D2/D3/D8; filter matches D4; test matches D7; docs match properties. curl /q/metrics checks not run.",
+        "duration_seconds": 78,
+        "budget": {
+          "five_hour_pct_end": 6,
+          "context_pct_end": 17,
+          "source": "statusline-cache",
+          "approx": true
+        }
+      }
+    ]
   },
   "decisions": [
     {
@@ -354,6 +376,14 @@
       "made_by": "leader",
       "decision": "Task timestamps: started_at from the dispatch bracket, completed_at from the worker's completion notice",
       "why": "Worker took no clock readings; re-requesting would yield invented times."
+    },
+    {
+      "id": "D10",
+      "at": "2026-11-19T20:06:46Z",
+      "scope": "review:security-gate",
+      "made_by": "user",
+      "decision": "Skip /security-review for round 1",
+      "why": "User choice at the security gate; diff is metrics/OTel config, one MeterFilter, one test, docs. Sensitive-data rule covered by D6."
     }
   ],
   "events": [
@@ -406,6 +436,31 @@
       "at": "2026-11-19T14:22:36Z",
       "agent": "leader",
       "event": "verified by the leader (assistantRunsTests): mvn -q clean verify exit 0 (0 failures; ObservabilityConfigPropertiesTest 14/14), mvn -q pmd:check exit 0"
+    },
+    {
+      "at": "2026-11-19T14:23:03Z",
+      "agent": "leader",
+      "event": "wave 1 commit 24b4da9"
+    },
+    {
+      "at": "2026-11-19T14:23:03Z",
+      "agent": "leader",
+      "event": "Step 6: openspec validate --strict OK; tasks.md all ticked; suite pass from wave 1 reused (no change since); real size 5 files +132/-35 (estimate 5 files ~170)"
+    },
+    {
+      "at": "2026-11-19T20:06:46Z",
+      "agent": "leader",
+      "event": "dispatched reviewer jbh-notification-reviewer round 1 (sonnet); budget start five_hour None%, context 16%"
+    },
+    {
+      "at": "2026-11-19T20:08:04Z",
+      "agent": "leader",
+      "event": "review round 1 approved, 0 findings, security skipped (D10). Reviewer wrote round 'at' 20:30:00Z (future, wrong clock); real end 2026-11-19T20:08:04Z. Budget five_hour 6%, context 17%"
+    },
+    {
+      "at": "2026-11-19T20:08:15Z",
+      "agent": "leader",
+      "event": "archived to openspec/changes/archive/notification/2026-11-19-jbh-notification-add-otel-export-histograms; spec notification-service-runtime synced (1 modified)"
     }
   ]
 }
