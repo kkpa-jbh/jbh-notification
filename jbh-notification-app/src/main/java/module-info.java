@@ -9,6 +9,10 @@ module jbh.notification.app {
   requires resteasy.reactive.common;
   requires jakarta.ws.rs;
   requires micrometer.core;
+  requires quarkus.opentelemetry;
+  requires io.opentelemetry.sdk;
+  requires io.opentelemetry.sdk.autoconfigure;
+  requires io.opentelemetry.sdk.autoconfigure.spi;
 
   opens com.jbh.notification.app to
       quarkus.core;

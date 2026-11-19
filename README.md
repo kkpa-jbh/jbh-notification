@@ -48,11 +48,38 @@ The body is a `SendNotificationCommand` (see the contracts module).
 | `CONSUL_HEALTH_CHECK_HOST` | Host Consul uses for the health check | empty |
 | `CONSUL_DISCOVERY_HOSTNAME` | Address the service registers | empty |
 | `CONSUL_PREFER_IP` | Register the IP instead of the host name | `true` |
-| `OTEL_SDK_DISABLED` | Turn OpenTelemetry off or on | `true` (`false` in dev) |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP gRPC collector (prod) | `http://localhost:4317` |
-| `OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG` | Trace sampling | `parentbased_traceidratio`, `1.0` |
+| `OTEL_SDK_DISABLED` | `true` stops only the OTLP export. Tracing stays on. Values are case-sensitive `true` or `false`; a bad value means off | `true` (`false` in dev) |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP gRPC collector (all profiles) | `http://localhost:14317` |
+| `OTEL_TRACES_SAMPLER`, `OTEL_TRACES_SAMPLER_ARG` | Trace sampling when export is on. Ignored while export is off | `parentbased_traceidratio`, `1.0` |
+| `JBH_ENV` | Environment name: metric tag `env` and resource attribute `deployment.environment.name` | `prod` (ignored in dev and test) |
 
 Never commit a `.env` file.
+
+## Observability
+
+- Metrics: `/q/metrics` (Prometheus). Every meter has the tags `service` and `env`.
+- HTTP latency: the timer `http.server.requests` has histogram buckets from 5 ms to 10 s
+  (`le` values 0.005 to 10.0 seconds, plus `+Inf`).
+- Traces and logs: sent over OTLP to the collector (Alloy). Export is off by default and on
+  in dev. Set `OTEL_SDK_DISABLED=false` to turn it on. With export off, tracing still runs:
+  `traceId` is in the logs and the incoming `traceparent` is read.
+- In dev, Alloy listens on `http://localhost:14317`. To use the shared LGTM stack, set
+  `OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317`.
+- Known limit: with export off, the outgoing `traceparent` has sampled=0. A service that
+  calls another service and uses a parent-based sampler would drop spans in that call. This
+  service calls no other service over HTTP.
+- Rule: never put a recipient email, an email body, an invitation token or a Gmail
+  credential in logs or span attributes.
+
+Local check, with the service running and one request sent:
+
+```bash
+curl -s localhost:7778/q/metrics | grep 'http_server_requests_seconds_bucket' | grep -o 'le="[^"]*"' | sort -u
+curl -s localhost:7778/q/metrics | grep -vc '^#'   # series count
+```
+
+The first command must show 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0
+and +Inf.
 
 ## Database
 

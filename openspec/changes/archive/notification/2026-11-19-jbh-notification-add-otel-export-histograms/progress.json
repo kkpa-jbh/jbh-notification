@@ -1,0 +1,479 @@
+{
+  "schema_version": 1,
+  "kind": "change",
+  "change": "jbh-notification-add-otel-export-histograms",
+  "module": "jbh-notification",
+  "roadmap": null,
+  "request": "JBH-55 section 6 (jbh-notification) — export in prod, latency histograms. Ticket: JBH-82 (record as git.ticket, tracker linear). Plan: /Users/cristianpena/cpena/sw/github/kkpa-jbh/kkpa/tickets/JBH-55/JBH-55.md, section 6 (read its Context section too, for the shared bucket list). Fixed names from section 1: OTEL_EXPORTER_OTLP_ENDPOINT=http://jbh-alloy:4317 (Docker), http://localhost:14317 (IDE default), OTEL_SDK_DISABLED=false, JBH_ENV=local. Constraints: plan says unit tests excluded; do not run builds unless assistantRunsTests is true; the leader session (jbh-leader) owns all Linear status moves for JBH-55 and its sub-issues, so do NOT run kkpa-pickup-linear-ticket in-progress/done. Git: start the change branch from local main, which holds the unpushed commit 77bdf51 \"chore: add Qodana config\" — the user chose to keep it in this branch and PR.",
+  "status": "archived",
+  "rollup": {
+    "current": [],
+    "pending": [],
+    "blocked": [],
+    "done": [
+      "1.1",
+      "1.2",
+      "2.1",
+      "2.2",
+      "2.3",
+      "2.4",
+      "3.1",
+      "4.1",
+      "4.2"
+    ]
+  },
+  "created_at": "2026-11-16T01:19:30Z",
+  "updated_at": "2026-11-19T20:09:03Z",
+  "leader": {
+    "assistant": "Claude Code",
+    "model": "claude-opus-5-5"
+  },
+  "git": {
+    "strategy": "auto",
+    "branch": "ft/CH2-JBH-82-jbh-notification-add-otel-export-histograms",
+    "base": "main",
+    "ticket": "JBH-82",
+    "ticket_url": "https://linear.app/kkpa/issue/JBH-82",
+    "ticket_tracker": "linear",
+    "created_at": "2026-11-15T19:50:00Z"
+  },
+  "test_first": {
+    "status": "skipped",
+    "commit": null,
+    "tests": [],
+    "approved_at": null
+  },
+  "tasks": [
+    {
+      "id": "1.1",
+      "title": "Add httpServerLatency() MeterFilter with the 11 SLO buckets",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "claude-sonnet-5-5",
+      "started_at": "2026-11-19T14:20:40Z",
+      "completed_at": "2026-11-19T14:21:51Z",
+      "duration_seconds": 71,
+      "notes": "httpServerLatency() added: exact match on http.server.requests, 11 SLO buckets from one constant in nanoseconds, merge(config); other meters unchanged.",
+      "budget": {
+        "five_hour_pct_start": 4,
+        "five_hour_pct_end": 10,
+        "five_hour_pct_delta": 6,
+        "cost_usd_delta": null,
+        "context_pct_end": 16,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "one serial worker ran all 9 tasks; shared wave delta"
+      }
+    },
+    {
+      "id": "1.2",
+      "title": "Update MetricsTagsConfig class Javadoc",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "claude-sonnet-5-5",
+      "started_at": "2026-11-19T14:20:40Z",
+      "completed_at": "2026-11-19T14:21:51Z",
+      "duration_seconds": 71,
+      "notes": "Class Javadoc now: Micrometer meter filters for this app (common tags and HTTP latency buckets).",
+      "budget": {
+        "five_hour_pct_start": 4,
+        "five_hour_pct_end": 10,
+        "five_hour_pct_delta": 6,
+        "cost_usd_delta": null,
+        "context_pct_end": 16,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "one serial worker ran all 9 tasks; shared wave delta"
+      }
+    },
+    {
+      "id": "2.1",
+      "title": "OBSERVABILITY block: logs in every profile, one endpoint, D8 export switch",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "claude-sonnet-5-5",
+      "started_at": "2026-11-19T14:20:40Z",
+      "completed_at": "2026-11-19T14:21:51Z",
+      "duration_seconds": 71,
+      "notes": "OBSERVABILITY block per D1 and D8, with plain-English comment block; one endpoint line, default http://localhost:14317.",
+      "budget": {
+        "five_hour_pct_start": 4,
+        "five_hour_pct_end": 10,
+        "five_hour_pct_delta": 6,
+        "cost_usd_delta": null,
+        "context_pct_end": 16,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "one serial worker ran all 9 tasks; shared wave delta"
+      }
+    },
+    {
+      "id": "2.2",
+      "title": "jbh.metrics.env from JBH_ENV; resource attributes",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "claude-sonnet-5-5",
+      "started_at": "2026-11-19T14:20:40Z",
+      "completed_at": "2026-11-19T14:21:51Z",
+      "duration_seconds": 71,
+      "notes": "jbh.metrics.env=${JBH_ENV:prod}; resource attributes line added (D2). No service.version var (D3).",
+      "budget": {
+        "five_hour_pct_start": 4,
+        "five_hour_pct_end": 10,
+        "five_hour_pct_delta": 6,
+        "cost_usd_delta": null,
+        "context_pct_end": 16,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "one serial worker ran all 9 tasks; shared wave delta"
+      }
+    },
+    {
+      "id": "2.3",
+      "title": "Fix MDC comment (no trackingId)",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "claude-sonnet-5-5",
+      "started_at": "2026-11-19T14:20:40Z",
+      "completed_at": "2026-11-19T14:21:51Z",
+      "duration_seconds": 71,
+      "notes": "MDC comment fixed: no trackingId.",
+      "budget": {
+        "five_hour_pct_start": 4,
+        "five_hour_pct_end": 10,
+        "five_hour_pct_delta": 6,
+        "cost_usd_delta": null,
+        "context_pct_end": 16,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "one serial worker ran all 9 tasks; shared wave delta"
+      }
+    },
+    {
+      "id": "2.4",
+      "title": "Keep JSON console in prod and other lines unchanged",
+      "module": "jbh-notification",
+      "depends_on": [],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "claude-sonnet-5-5",
+      "started_at": "2026-11-19T14:20:40Z",
+      "completed_at": "2026-11-19T14:21:51Z",
+      "duration_seconds": 71,
+      "notes": "JSON console in prod and all other lines unchanged.",
+      "budget": {
+        "five_hour_pct_start": 4,
+        "five_hour_pct_end": 10,
+        "five_hour_pct_delta": 6,
+        "cost_usd_delta": null,
+        "context_pct_end": 16,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "one serial worker ran all 9 tasks; shared wave delta"
+      }
+    },
+    {
+      "id": "3.1",
+      "title": "Update ObservabilityConfigPropertiesTest to new values (D7)",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "claude-sonnet-5-5",
+      "started_at": "2026-11-19T14:20:40Z",
+      "completed_at": "2026-11-19T14:21:51Z",
+      "duration_seconds": 71,
+      "notes": "Seven methods updated per D7, no method added. Three renamed because old names were false (export off by default, profile endpoints unset, log exporter in every profile).",
+      "budget": {
+        "five_hour_pct_start": 4,
+        "five_hour_pct_end": 10,
+        "five_hour_pct_delta": 6,
+        "cost_usd_delta": null,
+        "context_pct_end": 16,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "one serial worker ran all 9 tasks; shared wave delta"
+      }
+    },
+    {
+      "id": "4.1",
+      "title": "README Observability section and env var rows",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "claude-sonnet-5-5",
+      "started_at": "2026-11-19T14:20:40Z",
+      "completed_at": "2026-11-19T14:21:51Z",
+      "duration_seconds": 71,
+      "notes": "README Observability section added; env var rows fixed (OTEL_SDK_DISABLED, OTEL_EXPORTER_OTLP_ENDPOINT, JBH_ENV); D8 known limit noted.",
+      "budget": {
+        "five_hour_pct_start": 4,
+        "five_hour_pct_end": 10,
+        "five_hour_pct_delta": 6,
+        "cost_usd_delta": null,
+        "context_pct_end": 16,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "one serial worker ran all 9 tasks; shared wave delta"
+      }
+    },
+    {
+      "id": "4.2",
+      "title": "CLAUDE.md Observability section",
+      "module": "jbh-notification",
+      "depends_on": [
+        "2.1",
+        "2.2",
+        "2.3",
+        "2.4"
+      ],
+      "parallel_ok": true,
+      "status": "done",
+      "agent": "jbh-notification",
+      "model": "claude-sonnet-5-5",
+      "started_at": "2026-11-19T14:20:40Z",
+      "completed_at": "2026-11-19T14:21:51Z",
+      "duration_seconds": 71,
+      "notes": "CLAUDE.md Observability section: config location, sensitive-data rule, README pointer.",
+      "budget": {
+        "five_hour_pct_start": 4,
+        "five_hour_pct_end": 10,
+        "five_hour_pct_delta": 6,
+        "cost_usd_delta": null,
+        "context_pct_end": 16,
+        "source": "statusline-cache",
+        "approx": true,
+        "note": "one serial worker ran all 9 tasks; shared wave delta"
+      }
+    }
+  ],
+  "review": {
+    "status": "reviewer-approved",
+    "agent": "jbh-notification-reviewer",
+    "brief": "Change jbh-notification-add-otel-export-histograms (JBH-82). Check the diff git diff main...HEAD (commit 24b4da9 holds the code; 77bdf51 Qodana is on local main, out of scope). User decisions: latency filter is a second @Produces method in MetricsTagsConfig, no new class (D2 progress); export switch is a config lookup, no Java (D3 progress, design D8); unit tests excluded, only ObservabilityConfigPropertiesTest updated per design D7, no new method; design briefing D1-D8 approved. Verify: properties match design D1/D2/D3/D8 lines exactly; D4 filter (exact name match, 11 buckets in nanos, merge(config), other meters untouched); D7 test covers each table row and the 3 renames are justified; README/CLAUDE.md values match the properties (default endpoint http://localhost:14317, JBH_ENV default prod, OTEL_SDK_DISABLED meaning); D6 sensitive-data rule stated. No database change, no concurrency risk (D6 progress). Test-First: on, blueprint skipped (D5). Security-Gate: skip (user, D10). Signals: mvn -q clean verify exit 0 and mvn -q pmd:check exit 0 were assistant-run by the leader; the curl /q/metrics checks were not run (no service started). Language: English (B2).",
+    "rounds": [
+      {
+        "round": 1,
+        "at": "2026-11-19T20:30:00Z",
+        "verdict": "approved",
+        "findings": [],
+        "security": {
+          "status": "skipped",
+          "ran_at": "2026-11-19T20:30:00Z",
+          "scope": "git.base",
+          "findings": [],
+          "note": "Skipped: user chose to skip /security-review at the gate (decision D10, scope review:security-gate)."
+        },
+        "note": "All lenses clean. Properties match design D1/D2/D3/D8; filter matches D4; test matches D7; docs match properties. curl /q/metrics checks not run.",
+        "duration_seconds": 78,
+        "budget": {
+          "five_hour_pct_end": 6,
+          "context_pct_end": 17,
+          "source": "statusline-cache",
+          "approx": true
+        }
+      }
+    ]
+  },
+  "decisions": [
+    {
+      "id": "D1",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Keep Qodana commit 77bdf51 in this branch and PR",
+      "why": "User choice over a separate PR or leaving it on local main."
+    },
+    {
+      "id": "D2",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Only SRP binds; latency filter goes into MetricsTagsConfig as a second @Produces method",
+      "why": "Matches plan and section 5; a new class was rejected."
+    },
+    {
+      "id": "D3",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Run-time export switch as a config lookup (no Java)",
+      "why": "Quarkus exporter switches are build time; Java Sampler bean rejected as more code for the same result."
+    },
+    {
+      "id": "D4",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Design briefing approved",
+      "why": "User replied ok to the revised briefing (D1-D8)."
+    },
+    {
+      "id": "D5",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "test_first skipped",
+      "why": "Plan header 'Unit tests: excluded' (user); only existing tests are updated."
+    },
+    {
+      "id": "D6",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "concurrency",
+      "made_by": "leader",
+      "decision": "No race risk found",
+      "why": "Config, a stateless MeterFilter with a constant, one test, docs; no shared state or writes."
+    },
+    {
+      "id": "D7",
+      "at": "2026-11-16T01:19:30Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "No Linear status moves from this session",
+      "why": "Plan Execution Rules: only the jbh-leader session moves JBH-55 sub-issues; overrides the pipeline Linear rule."
+    },
+    {
+      "id": "D8",
+      "at": "2026-11-19T14:20:40Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "Run waves 1 and 2 (all 9 tasks) in one serial worker on sonnet",
+      "why": "~170 lines, 5 files; one worker reads the doc pack once and keeps dependency order 1,2 then 3,4. Two dispatches rejected as double doc-pack cost."
+    },
+    {
+      "id": "D9",
+      "at": "2026-11-19T14:22:36Z",
+      "scope": "change",
+      "made_by": "leader",
+      "decision": "Task timestamps: started_at from the dispatch bracket, completed_at from the worker's completion notice",
+      "why": "Worker took no clock readings; re-requesting would yield invented times."
+    },
+    {
+      "id": "D10",
+      "at": "2026-11-19T20:06:46Z",
+      "scope": "review:security-gate",
+      "made_by": "user",
+      "decision": "Skip /security-review for round 1",
+      "why": "User choice at the security gate; diff is metrics/OTel config, one MeterFilter, one test, docs. Sensitive-data rule covered by D6."
+    },
+    {
+      "id": "D11",
+      "at": "2026-11-19T20:09:03Z",
+      "scope": "change",
+      "made_by": "user",
+      "decision": "Do not update ../jbh-deploy/README.md in this change",
+      "why": "User choice: the JBH-55 leader session or JBH-84 updates the system map, as design.md says."
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-11-16T01:19:30Z",
+      "agent": "leader",
+      "event": "artifacts committed 284f8eb; progress.json created"
+    },
+    {
+      "at": "2026-11-16T01:19:37Z",
+      "agent": "leader",
+      "event": "dispatched worker for wave 1 (tasks 1.1-4.2, one serial worker, sonnet)"
+    },
+    {
+      "at": "2026-11-16T01:19:50Z",
+      "agent": "leader",
+      "event": "wave 1 dispatch cancelled before start: budget checkpoint (five_hour 97%, context 20%, five_hour_resets_at 1794796800); tasks back to pending"
+    },
+    {
+      "at": "2026-11-16T01:19:50Z",
+      "agent": "leader",
+      "event": "resume-armed — five_hour_resets_at 1794796800, wake epoch 1794796920, five_hour 97%, context 20%"
+    },
+    {
+      "at": "2026-11-16T01:20:46Z",
+      "agent": "leader",
+      "event": "resume found bucket not reset: five_hour 98%, context 10%, five_hour_resets_at 1794796800; no dispatch"
+    },
+    {
+      "at": "2026-11-16T01:20:46Z",
+      "agent": "leader",
+      "event": "resume-armed — five_hour_resets_at 1794796800, wake epoch 1794796920, five_hour 98%, context 10%"
+    },
+    {
+      "at": "2026-11-19T14:20:40Z",
+      "agent": "leader",
+      "event": "resume: bucket reset (five_hour 4%, context 12%); armed wake-up from 2026-11-16 is dead, not re-armed"
+    },
+    {
+      "at": "2026-11-19T14:20:40Z",
+      "agent": "leader",
+      "event": "dispatched worker for wave 1 (tasks 1.1-4.2, one serial worker, sonnet); budget start five_hour 4%"
+    },
+    {
+      "at": "2026-11-19T14:22:36Z",
+      "agent": "leader",
+      "event": "wave 1 reconciled: 9 tasks done; design decisions D1-D8 cross-checked against design.md (D8 lines exact); budget end five_hour 10%, context 16%"
+    },
+    {
+      "at": "2026-11-19T14:22:36Z",
+      "agent": "leader",
+      "event": "verified by the leader (assistantRunsTests): mvn -q clean verify exit 0 (0 failures; ObservabilityConfigPropertiesTest 14/14), mvn -q pmd:check exit 0"
+    },
+    {
+      "at": "2026-11-19T14:23:03Z",
+      "agent": "leader",
+      "event": "wave 1 commit 24b4da9"
+    },
+    {
+      "at": "2026-11-19T14:23:03Z",
+      "agent": "leader",
+      "event": "Step 6: openspec validate --strict OK; tasks.md all ticked; suite pass from wave 1 reused (no change since); real size 5 files +132/-35 (estimate 5 files ~170)"
+    },
+    {
+      "at": "2026-11-19T20:06:46Z",
+      "agent": "leader",
+      "event": "dispatched reviewer jbh-notification-reviewer round 1 (sonnet); budget start five_hour None%, context 16%"
+    },
+    {
+      "at": "2026-11-19T20:08:04Z",
+      "agent": "leader",
+      "event": "review round 1 approved, 0 findings, security skipped (D10). Reviewer wrote round 'at' 20:30:00Z (future, wrong clock); real end 2026-11-19T20:08:04Z. Budget five_hour 6%, context 17%"
+    },
+    {
+      "at": "2026-11-19T20:08:15Z",
+      "agent": "leader",
+      "event": "archived to openspec/changes/archive/notification/2026-11-19-jbh-notification-add-otel-export-histograms; spec notification-service-runtime synced (1 modified)"
+    },
+    {
+      "at": "2026-11-19T20:09:03Z",
+      "agent": "leader",
+      "event": "archive commit 9634818; pushed to origin/ft/CH2-JBH-82-jbh-notification-add-otel-export-histograms; draft PR #4 https://github.com/kkpa-jbh/jbh-notification/pull/4"
+    }
+  ]
+}
