@@ -15,6 +15,11 @@
   <description>Runnable Quarkus app of the notification service (port 7778)</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <!-- Docker tests (tag "database") are off by default. -Djbh.test.excludedGroups=none turns them on. -->
+    <jbh.test.excludedGroups>database</jbh.test.excludedGroups>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -47,6 +52,20 @@
             </goals>
           </execution>
         </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+      </plugin>
+
+      <!-- Quarkus tests do not run on the module path (same as jbh-notification-infra). Tests tagged "database"
+           need Docker, so they run only with -Djbh.test.excludedGroups=none (ci.yml passes it). -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludedGroups>${jbh.test.excludedGroups}</excludedGroups>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+          </systemPropertyVariables>
+          <useModulePath>false</useModulePath>
+        </configuration>
         <groupId>org.apache.maven.plugins</groupId>
       </plugin>
     </plugins>
@@ -111,6 +130,18 @@
     <dependency>
       <artifactId>mockito-core</artifactId>
       <groupId>org.mockito</groupId>
+      <scope>test</scope>
+    </dependency>
+    <!-- HTTP calls in the Kubernetes probe test. Version comes from the Quarkus BOM. -->
+    <dependency>
+      <artifactId>rest-assured</artifactId>
+      <groupId>io.rest-assured</groupId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Throwaway PostgreSQL for the Kubernetes probe test. Version comes from the Quarkus BOM. -->
+    <dependency>
+      <artifactId>testcontainers-postgresql</artifactId>
+      <groupId>org.testcontainers</groupId>
       <scope>test</scope>
     </dependency>
   </dependencies>
